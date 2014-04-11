@@ -316,29 +316,14 @@ void computeCellHistogram(int dims[2], double *img_rank_s, cell_info c_inf, int 
 		for(int n=c_inf.cell_y; n < c_inf.cell_y+c_inf.wCell; n++)
 		{
 			binCenter = 0;
-			switch(method_no)
-			{
-				case 0: //for HOG
-						binCnt = 1;
-						binCenter = (int*)calloc(binCnt,sizeof(int));
-						*binCenter = (int)((floor)(imgGrad->orientation_ppf[m][n] / (CV_PI / imgHist->nBins_i)));
-						if(binCenter[0] == imgHist->nBins_i)
-							binCenter[0]--; //happens when orientation is CV_PI
-						imgHist->hist_ppf[row_index][binCenter[0] + (imgHist->nBins_i*col_index)] += (imgGrad->magnitude_ppf[m][n]);
-						break;
 
-                case 22://LBP (LBP)
-						if(!check_border_pt(m, dims[0], n, dims[1]))
-						{
-							for(chan=0;chan<n_channels;chan++)
-							{
-								binCnt = find_LBP_bin(img_rank_s + chan * dims[0]*dims[1], m,n, dims[0], dims[1], &binCenter);
-								for(int b = 0; b < binCnt; b++)
-									imgHist->hist_ppf[row_index][binCenter[b] + (imgHist->nBins_i*col_index)] += 1;
-							}
-						}
-						break;
-			}
+            //for HOG
+                    binCnt = 1;
+                    binCenter = (int*)calloc(binCnt,sizeof(int));
+                    *binCenter = (int)((floor)(imgGrad->orientation_ppf[m][n] / (CV_PI / imgHist->nBins_i)));
+                    if(binCenter[0] == imgHist->nBins_i)
+                        binCenter[0]--; //happens when orientation is CV_PI
+                    imgHist->hist_ppf[row_index][binCenter[0] + (imgHist->nBins_i*col_index)] += (imgGrad->magnitude_ppf[m][n]);
 
 			if(binCenter)
 				free(binCenter);
