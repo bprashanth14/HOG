@@ -3,7 +3,7 @@
 #define _HOGTRAIN_HPP
 
 #include "HOGtypes.h"
-#include "HOGphases.h"
+#include "descriptor.h"
 
 extern descriptor_s *(*getDescp)(IplImage *,int,dtct_s);
 extern int train_neg_images;
