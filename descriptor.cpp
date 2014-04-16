@@ -149,14 +149,6 @@ void apply_filter(float **img_rank, double *img_rank_s, int rows, int cols)
      }
 }
 
-/************************************************************
-Function to check if the pixel is at the border of the image
-*************************************************************/
-int check_border_pt(int x_pos, int x_limit, int y_pos, int y_limit)
-{
-	return ((x_pos < NBD_SZ) || (x_pos >= x_limit-NBD_SZ) || (y_pos < NBD_SZ) || (y_pos >= y_limit-NBD_SZ));
-}
-
 /* replicates the find() function of Matlab */
 void find(const cv::Mat& binary, std::vector<cv::Point>& idx)
 {
@@ -174,68 +166,6 @@ void find(const cv::Mat& binary, std::vector<cv::Point>& idx)
     }
 }
 
-/**********************************************************************************
-Function to find the bin no. in for SLBP
-Algorithm :-
-
-Assumes a gray-scale image and row-major order implementation of the image.
-***********************************************************************************/
-
-int LBP_Pattern(const double* src, int col_j, int row_i, int imWidth, int imHeight)
-{
-	int lbpPattern = 0;
-	for(int n=0; n<NBR_CNT; n++)
-	{
-		// sample points
-		float x = static_cast<float>(NBD_RAD) * cos(2.0*M_PI*n/static_cast<float>(NBR_CNT)); //r*cos(th)
-		float y = static_cast<float>(NBD_RAD) * -sin(2.0*M_PI*n/static_cast<float>(NBR_CNT)); //r*-sin(th)
-
-		// relative indices
-		int fx = static_cast<int>(floor(x));
-		int fy = static_cast<int>(floor(y));
-		int cx = static_cast<int>(ceil(x));
-		int cy = static_cast<int>(ceil(y));
-
-		// fractional part
-		float ty = y - fy;
-		float tx = x - fx;
-
-		// set interpolation weights
-		float w1 = (1 - tx) * (1 - ty);
-		float w2 =      tx  * (1 - ty);
-		float w3 = (1 - tx) *      ty;
-		float w4 =      tx  *      ty;
-
-		// iterate through your data
-		float t = w1*src[col_j+fx + (row_i+fy)*imWidth] + w2*src[col_j+cx + (row_i+fy)*imWidth] + w3*src[col_j+fx + (row_i+cy)*imWidth] + w4*src[col_j+cx + (row_i+cy)*imWidth];
-
-		// we are dealing with floating point precision, so add some tolerance
-		lbpPattern += ((t >= src[col_j + row_i*imWidth]) && (abs(t - src[col_j + row_i*imWidth]) > std::numeric_limits<float>::epsilon())) << n;
-	}
-	return lbpPattern;
-}
-
-
-bool isUniformPattern(int pattern, int neighbors, int unifPatternThshld)
-{
-	char chngCnt = 0;
-	bool bitToLookFor = pattern & 1, currBit;
-	pattern >>= 1;
-
-	//check for uniform pattern
-	for(int b = neighbors-1; b > 0; b--)
-	{
-	    currBit = pattern & 1;
-	    if(bitToLookFor != currBit)
-	    {
-	        chngCnt++;
-	        bitToLookFor = currBit;
-	    }
-		pattern >>= 1;
-	}
-
-	return(chngCnt <= unifPatternThshld); //1 if the pattern is uniform
-}
 
 /********************************************************************************************************************
 Function to compute the gradient of an image

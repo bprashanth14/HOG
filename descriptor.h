@@ -1,7 +1,7 @@
 #ifndef HOG_PHASES_H
 #define HOG_PHASES_H
 
-#include"HOGtypes.h"
+#include "HOGtypes.h"
 
 int imageGradient(const IplImage *inputImg, Grad_s *imgGrad);
 
@@ -12,10 +12,6 @@ descriptor_s* normalizeWindow(int rowIndex_i,int colIndex_i,const dtct_s *dtctIn
 descriptor_s* getFV(imgHist_s *imgHist,const dtct_s *dtctInfo);
 
 descriptor_s* mergeDescriptors(descriptor_s* descriptorData1,descriptor_s* descriptorData2);
-
-//descriptor_s* (*getDescp)(IplImage *, int, dtct_s);
-
-int SVMwrite(char *filename,char *pcaFilename,int class_i,descriptor_s* descriptorData,int writePca = 0);
 
 void getImgData_asDouble_inRowMajorOrder(IplImage* im, double **data);
 
