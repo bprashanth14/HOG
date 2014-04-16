@@ -1,7 +1,7 @@
 /* This file was automatically generated.  Do not edit! */
 #ifndef _HOGTRAIN_HPP
 #define _HOGTRAIN_HPP
-
+ 
 #include "HOGtypes.h"
 #include "descriptor.h"
 
