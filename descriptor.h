@@ -1,6 +1,6 @@
 #ifndef HOG_PHASES_H
 #define HOG_PHASES_H
-
+ 
 #include "HOGtypes.h"
 
 int imageGradient(const IplImage *inputImg, Grad_s *imgGrad);
