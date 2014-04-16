@@ -1,5 +1,5 @@
 #include "descriptor.h"
-
+ 
 #define eps 0.0001
 
 #define EPSILON 0.01
