@@ -5,10 +5,10 @@ float* model;
 int modelflag=0;
 float svmthresh;
 
-//#define descSize 6721
+
 #define display 0
 
-#include "HOGtrain.hpp"
+#include "include.h"
 
 #define SKIP_IMAGES_BOOL 1
 #if SKIP_IMAGES_BOOL
@@ -53,21 +53,21 @@ void setImageProcessParams(char **histParams,imgProcesParams iPP)
 
 	sprintf(num,"%d",iPP.cell_xy);
 
+	strcpy(histParams[0], num);
 	strcpy(histParams[1], num);
-	strcpy(histParams[2], num);
 
 	//block dimensions
 	//itoa(iPP.block_xy,num,10);
 
 	sprintf(num,"%d",iPP.block_xy);
+	strcpy(histParams[2], num);
 	strcpy(histParams[3], num);
-	strcpy(histParams[4], num);
 
 	//no. of bins
 	//itoa(iPP.no_bins,num,10);
 
 	sprintf(num,"%d",iPP.no_bins);
-	strcpy(histParams[5], num);
+	strcpy(histParams[4], num);
 
 	//mix proprtion
 	sprintf(num,"%f",iPP.mix1);
@@ -283,13 +283,13 @@ descriptor_s *computeDescriptor(IplImage *inputImg,char **histParams)
 {
 	dtct_s dtctInfo;
 
-	if(atoi(histParams[0]) == 2 && atoi(histParams[5])<16)
-		strcpy(histParams[5],"16");
+	if(atoi(histParams[0]) == 2 && atoi(histParams[4])<16)
+		strcpy(histParams[4],"16");
 
-	int no_of_bins = atoi(histParams[5]);
+	int no_of_bins = atoi(histParams[4]);
 	int method_no = atoi(histParams[0]);
 
-	dtctInfo = setDescriptorParams(histParams[1],histParams[2],histParams[3],histParams[4],histParams[5]);
+	dtctInfo = setDescriptorParams(histParams[0],histParams[1],histParams[2],histParams[3],histParams[4]);
 	dtctInfo.wDtct_i = inputImg->width;
 	dtctInfo.hDtct_i = inputImg->height;
 
@@ -581,36 +581,33 @@ void getDetectionBoxes(Mat frame, vector<Rect>* boxes, vector<float>* scores, ch
 ********************************************/
 int main(int argc,char *argv[])
 {
-	if(argc != 6)
+	if(argc != 5)
 	{
-		fprintf(stderr,"Wrong number of arguments :: Usage :: ./a.out srcDir_Path dest_Dir_Path descriptor_Id  model_fileName svmthresh\n\n");
+		fprintf(stderr,"Wrong number of arguments :: Usage :: ./a.out srcDir_Path dest_Dir_Path  model_fileName svmthresh\n\n");
 		exit(-1);
 	}
 
-	//argv[1] contains the 'v' directory which contains the test images
+	//argv[1] contains the src directory which contains the test images
 	//argv[2] contains the dest directory where the detection results will be saved
-	//argv[3] contains the name of the first image in the 'v' directory specified in argv[1]
-	//argv[3] has descriptor id
-	//argv[4] has model file name
-	//argv[5] has svm threshold
+	//argv[3] has model file name
+	//argv[4] has svm threshold
 	
 	
     char **histParams = 0;
 
-    histParams = new char*[6];
+    histParams = new char*[5];
 
-	histParams[0]= argv[3]; //descriptor id
-	histParams[1]=(char*)"8"; //x-cellsz in pixels
-	histParams[2]=(char*)"8"; //y-cellsz in pixels
-	histParams[3]=(char*)"2"; //x-blockSz in cells
-	histParams[4]=(char*)"2"; //y-blockSz in cells
-	histParams[5]=(char*)"16"; //stride factor for blocks
+	histParams[0]=(char*)"8"; //x-cellsz in pixels
+	histParams[1]=(char*)"8"; //y-cellsz in pixels
+	histParams[2]=(char*)"2"; //x-blockSz in cells
+	histParams[3]=(char*)"2"; //y-blockSz in cells
+	histParams[4]=(char*)"16"; //stride factor for blocks
 
 	string line, filename;
 	std::ifstream posFile;
 	std::ofstream detectionResultFile;
     
-	svmthresh=atof(argv[5]);
+	svmthresh=atof(argv[4]);
 
 	long long windowCnt = 0;
 
@@ -626,7 +623,7 @@ int main(int argc,char *argv[])
 	}
 
 	//read the model file
-	readModel(argv[4]);
+	readModel(argv[3]);
 
     while (getline(posFile,line))
 	{
@@ -661,7 +658,7 @@ int main(int argc,char *argv[])
 		//get the detection boxes
         vector<float> scores;
         vector<Rect> boxes;
-        getDetectionBoxes(frame, &boxes, &scores, histParams, argv[4]);
+        getDetectionBoxes(frame, &boxes, &scores, histParams, argv[3]);
 
         //highlight and write-out the detections
 		for(int i=0; i<boxes.size(); i++)
