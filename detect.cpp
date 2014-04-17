@@ -579,11 +579,13 @@ void getDetectionBoxes(Mat frame, vector<Rect>* boxes, vector<float>* scores, ch
 /********************************************
  Main function
 ********************************************/
+const char* helpMsg = "\ndetect.cpp:\nPerforms the sliding-window detection of the object for which the model was created on each of the images given in the test directory. \nWrites out the detection information to text files in the given destination directory in the [x,y,w,h,score] format. \nExpects a txt file containing the names of the images (pos.txt or neg.txt, as the case may be.)\nUsage: ./a.out testImgDir detectionDir svmModelFileName svm_threshold.\n\n";
+
 int main(int argc,char *argv[])
 {
 	if(argc != 5)
 	{
-		fprintf(stderr,"Wrong number of arguments :: Usage :: ./a.out srcDir_Path dest_Dir_Path  model_fileName svmthresh\n\n");
+		fprintf(stderr,"%s", helpMsg);
 		exit(-1);
 	}
 

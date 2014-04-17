@@ -272,11 +272,13 @@ void trainSVM(char* trainFeatFile, char* trainModelFile)
  Main function
 ********************************************/
 
+const char* helpMsg = "\ntrain.cpp:\nCreates a HOG descriptor for each of the images in the given direcotory and trains a linear-svm based on them. \nExpects a txt file containing the names of the images (pos.txt or neg.txt, as the case may be.)\nUsage: ./a.out posImgDir negImgDir descriptorFileName svmModelFileName.\n\n";
+
 int main(int argc,char *argv[])
 {
 	if(argc != 5)
 	{
-		fprintf(stderr,"Wrong number of arguments :: Usage :: ./a.out pos_Training_Dir neg_Training_Dir descFile_save_Name modelFileName\n\n");
+		fprintf(stderr,"%s", helpMsg);
 		exit(-1);
 	}
 
